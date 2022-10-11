@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 
-
+## CODE TAKEN FROM SOLUTION GIVEN TO EXERCISES ##
 
 class SlidingWindowIter:
     def __init__(self, image, window_size):
@@ -38,15 +38,11 @@ class SlidingWindowIter:
                     self.x - self.pad : self.x + self.pad + 1,
                 ],
             )
-        # else:
-        #     raise StopIteration
-
 
 def requantize(img, gray_levels):
     return np.uint8(np.round(img * ((gray_levels - 1) / 255)))
 
-
-def threshhold(img, T, reverse=False):
+def threshhold(img, T, reverse=True):
     """
     Simple global threshhold
     """
@@ -60,6 +56,8 @@ def threshhold(img, T, reverse=False):
             if val > T:
                 thresholded[index[0], index[1]] = 1
     return thresholded
+
+## CODE CREATED FOR THIS ASSIGNMENT ##
 
 def save_image(image, glcm_image, gray_levels, dx, dy, filename, texture_start):
     fig = plt.figure(figsize=(20,10))
@@ -98,8 +96,6 @@ def save_image(image, glcm_image, gray_levels, dx, dy, filename, texture_start):
 
     fig.suptitle(f'GLCM of {filename} with gray_levels={gray_levels}')
     plt.savefig(f"{filename}_glcms.png") 
-
-
 
 def read_image(filename):
     f = np.asarray(Image.open(filename))

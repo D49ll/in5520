@@ -6,16 +6,10 @@ from tqdm import tqdm
 from img_utils import requantize
 from img_utils import SlidingWindowIter
 
-@jit(nopython=True)
-def inertia(matrix):
-    inr = 0
-    for i in range(matrix.shape[0]):
-        for j in range(matrix.shape[1]):
-            inr += matrix[i, j] * (i - j)**2
-    return inr
+## CODE TAKEN FROM SOLUTION GIVEN TO EXERCISES ##
 
 @jit(nopython=True)
-def glcm(quantized, dy, dx, gray_levels=256, normalise=True):
+def glcm(quantized, dy, dx, gray_levels=256, normalise=True, symmetric = True):
     glcm = np.zeros((gray_levels, gray_levels))
     for y in range(quantized.shape[0] - abs(dy)):
         for x in range(quantized.shape[1] - abs(dx)):
@@ -23,10 +17,35 @@ def glcm(quantized, dy, dx, gray_levels=256, normalise=True):
             px2 = quantized[y + dy, x + dx]
             glcm[px1, px2] += 1
 
-    if normalise:
+    if normalise and symmetric:
+        glcm += np.transpose(glcm) #Added this to the code
+
         return glcm * (1 / np.sum(glcm))
 
+    if normalise:
+        return glcm * (1 / np.sum(glcm))
+        
     return glcm
+
+def compute_glcm_features(image, window_size, dy, dx, gray_levels, feature_fn):
+    feature_image = np.zeros(image.shape)
+    quantized = requantize(image, gray_levels)
+
+    for x, y, window in tqdm(SlidingWindowIter(quantized, window_size)):
+        matrix = glcm(window, dy, dx, gray_levels)
+        feature_image[y, x] = feature_fn(matrix)
+    return feature_image
+
+
+## CODE CREATED FOR THIS ASSIGNMENT ##
+
+@jit(nopython=True)
+def inertia(matrix):
+    inr = 0
+    for i in range(matrix.shape[0]):
+        for j in range(matrix.shape[1]):
+            inr += matrix[i, j] * (i - j)**2
+    return inr
 
 @jit (nopython=True)
 def homogeneity(matrix):
@@ -87,11 +106,3 @@ def isotropic_glcm(image, gray_levels, distance=1):
     return isotropic
 
 
-def compute_glcm_features(image, window_size, dy, dx, gray_levels, feature_fn):
-    feature_image = np.zeros(image.shape)
-    quantized = requantize(image, gray_levels)
-
-    for x, y, window in tqdm(SlidingWindowIter(quantized, window_size)):
-        matrix = glcm(window, dy, dx, gray_levels)
-        feature_image[y, x] = feature_fn(matrix)
-    return feature_image

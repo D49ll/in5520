@@ -12,25 +12,27 @@ def taskB():
 
     #Mosaic1 parameters
     glcm_mosiac1 = []
-    dx = [1, 4,           2, 4]
-    dy = [1, "isotropic", 0, "isotropic"]
+    dx = [2, 1,           2 , 1]
+    dy = [2, "isotropic", 6, "isotropic"]
 
     #Mosaic1 parameters
     glcm_mosiac2 = []
-    dx_2 = [1, 0, 2, 4]
-    dy_2 = [1, 2, 0, "isotropic"]
-
+    # dx_2 = [1, 0, 2, 4]
+    # dy_2 = [1, 2, 0, "isotropic"]
+    dx_2 = [3, 2, 0, 1]
+    dy_2 = [-3, 0, 1, "isotropic"]
+    
     #Mosaic1
-    glcm_mosiac1.append(glcm(requantize(t1[0], gray_levels=gray_levels), dx=dx[0], dy=dy[0], gray_levels=gray_levels, normalise=True))
+    glcm_mosiac1.append(glcm(requantize(t1[0], gray_levels=gray_levels), dx=dx[0], dy=dy[0], gray_levels=gray_levels))
     glcm_mosiac1.append(isotropic_glcm(t1[1], gray_levels, distance = dx[1]))
-    glcm_mosiac1.append(glcm(requantize(t1[2], gray_levels=gray_levels), dx=dx[2], dy=dy[2], gray_levels=gray_levels, normalise=True))
+    glcm_mosiac1.append(glcm(requantize(t1[2], gray_levels=gray_levels), dx=dx[2], dy=dy[2], gray_levels=gray_levels))
     glcm_mosiac1.append(isotropic_glcm(t1[3], gray_levels, distance = dx[3]))
     save_image(t1, glcm_mosiac1, gray_levels=gray_levels, dx=dx, dy=dy, filename='mosaic1', texture_start=0)
 
     #Mosaic2
-    glcm_mosiac2.append(glcm(requantize(t2[0], gray_levels=gray_levels), dx=dx_2[0], dy=dy_2[0], gray_levels=gray_levels, normalise=True))
-    glcm_mosiac2.append(glcm(requantize(t2[1], gray_levels=gray_levels), dx=dx_2[1], dy=dy_2[1], gray_levels=gray_levels, normalise=True))
-    glcm_mosiac2.append(glcm(requantize(t2[2], gray_levels=gray_levels), dx=dx_2[2], dy=dy_2[2], gray_levels=gray_levels, normalise=True))
+    glcm_mosiac2.append(glcm(requantize(t2[0], gray_levels=gray_levels), dx=dx_2[0], dy=dy_2[0], gray_levels=gray_levels))
+    glcm_mosiac2.append(glcm(requantize(t2[1], gray_levels=gray_levels), dx=dx_2[1], dy=dy_2[1], gray_levels=gray_levels))
+    glcm_mosiac2.append(glcm(requantize(t2[2], gray_levels=gray_levels), dx=dx_2[2], dy=dy_2[2], gray_levels=gray_levels))
     glcm_mosiac2.append(isotropic_glcm(t2[3], gray_levels, distance = dx_2[3]))
     
     save_image(t2, glcm_mosiac2, gray_levels=gray_levels, dx=dx_2, dy=dy_2, filename='mosaic2', texture_start=4)
@@ -90,14 +92,16 @@ def taskC_D(filename, window_size, dx, dy, gray_levels, threshold):
     fig.suptitle(f'Feature maps from {filename} with gray_levels={gray_levels} and dx={dx}, dy={dy}')
     plt.savefig(f"{filename}_featuremaps_dx{dx}_dy{dy}.png") 
 
-    # plt.show()
+    plt.show()
 
 def main():
     taskB()
-    taskC_D('mosaic1.png', window_size=31, dx=5, dy=0, gray_levels=16, threshold=[0.28,20,0])
-    taskC_D('mosaic2.png', window_size=31, dx=0, dy=5, gray_levels=16, threshold=[0.4,10,0])
+    # taskC_D('mosaic1.png', window_size=31, dx=5, dy=0, gray_levels=16, threshold=[0.26,20,0])
+
+    taskC_D('mosaic1.png', window_size=31, dx=1, dy=3, gray_levels=16, threshold=[0.3,10,-8.5])
+    taskC_D('mosaic2.png', window_size=31, dx=0, dy=3, gray_levels=16, threshold=[0.34,10,13])
 
 
 
 
-main()
+main() #23
